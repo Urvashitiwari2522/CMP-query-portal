@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Error</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <main style="padding:24px; max-width:900px; margin:0 auto;">
+    <h1>Something went wrong</h1>
+    <p>We encountered an internal error while processing your request.</p>
+    <pre style="background:#f8f8f8;padding:12px;border-radius:6px;overflow:auto;">{{ error }}</pre>
+    <p>Please check the server logs or contact the site administrator.</p>
+    <p><a href="{{ url_for('home') }}">Return home</a></p>
+  </main>
+</body>
+</html>

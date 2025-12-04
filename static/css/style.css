@@ -1,0 +1,457 @@
+/* =======================
+    THEME & BASE STYLES
+    ======================= */
+
+:root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --muted: #6b7280; /* gray-500 */
+    --text: #111827; /* gray-900 */
+    --primary: #0b3d91; /* formal navy */
+    --accent: #6b7280;
+    --border: #e6e9ee;
+    --shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background-color: #fbfdff;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* =======================
+    HEADER STYLES
+    ======================= */
+
+.site-header {
+    padding: 0;
+    padding-bottom: 7px; /* small extra space */
+    background: transparent;
+}
+.site-header--maroon { background-color: #800000; color: #fff; }
+.header-container { width: 100%; max-width: 1100px; margin: 0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 18px; }
+.cmp-logo { color:var(--text); font-weight:700; font-size:18px; }
+.nav-right a { color:var(--text); text-decoration:none; margin-left:16px; font-weight:600; }
+
+
+/* =======================
+   HOMEPAGE MIDDLE PART STYLES
+   ======================= */
+
+/* Hero Section */
+.hero-section {
+    background-color: #f0f0f0; /* light gray background for hero */
+    background-size: cover;
+    background-position: center;
+    color: #111;
+    min-height: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.hero-content h1 {
+    font-size: 2.6em;
+    margin-bottom: 0.3em;
+}
+
+.hero-content p {
+    font-size: 1.2em;
+    max-width: 600px;
+    margin: 0 auto;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+/* Gateway Section */
+.gateway-section {
+    padding: 60px 20px;
+    background-color: #f0f2f5;
+}
+
+.gateway-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.gateway-card {
+    background-color: #fff;
+    padding: 40px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gateway-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.card-icon {
+    font-size: 2.4em;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.gateway-card h3 {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.gateway-card p {
+    color: gray;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.btn-main, .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.15s ease, transform 0.06s ease;
+    border: 1px solid transparent;
+}
+
+.btn-main { background-color: var(--primary); color: #fff; border-color: rgba(11,61,145,0.9); }
+.btn-main:hover { background-color: #092f6f; transform: translateY(-1px); }
+
+/* Make all submit controls use red to match gateway style (site-wide) */
+button[type="submit"], input[type="submit"], .btn-main {
+    background-color: #650303 !important;
+    color: #fff !important;
+    border-color: #650303 !important;
+}
+button[type="submit"]:hover, input[type="submit"]:hover, .btn-main:hover {
+    background-color:  #650303 !important;
+}
+.btn-secondary { background-color: #f3f4f6; color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { background-color: #e9ecf0; }
+
+/* Gateway cards: make action buttons red */
+.gateway-card .btn-main,
+.gateway-card .btn-secondary,
+.gateway-card a[class^="btn"] {
+    background-color:  #650303; /* red-700 */
+    color: #fff !important;
+    border-color: #650303;
+}
+.gateway-card .btn-main:hover,
+.gateway-card .btn-secondary:hover,
+.gateway-card a[class^="btn"]:hover {
+    background-color:  #650303; /* darker red on hover */
+    transform: translateY(-1px);
+}
+
+/* Prototype maroon button variant */
+.btn-maroon { background-color: #800000; color: #fff; border: none; }
+.btn-maroon:hover { background-color: #660000; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color:var(--text); }
+
+/* Homepage prototype specific */
+.hero-proto { background-color: #f8f9fa; }
+.proto-title { font-size: 2.2em; margin-bottom:8px; color:var(--text); }
+.proto-sub { color:var(--muted); margin-bottom:18px; }
+.proto-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+
+/* Stats Section */
+.stats-section {
+    padding: 60px 20px;
+}
+
+.stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.stats-container h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.stat-box {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.stat-box i {
+    font-size: 2.5em;
+    color: #42b72a;
+    margin-bottom: 15px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.4em;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.stat-metric {
+    font-size: 1.1em;
+    color: #606770;
+    margin-top: 5px;
+}
+
+/* =======================
+   FAQ Section Styles
+   ======================= */
+.faq-section {
+    background-color: #f0f2f5;
+    padding: 50px 15px;
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-container h2 {
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 24px;
+    color: var(--text);
+}
+
+.faq-item {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.faq-question {
+    width: 100%;
+    background-color: #fff;
+    padding: 15px 20px;
+    border: none;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: #f5f6f7;
+}
+
+.faq-icon {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1877f2;
+}
+
+.faq-answer {
+    background-color: #fff;
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+}
+
+.faq-answer p {
+    margin: 0;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+    line-height: 1.6;
+    color: #606770;
+}
+
+/* =======================
+   FOOTER STYLES
+   ======================= */
+.site-footer a {
+    text-decoration: none;
+}
+.site-footer--black { background:#000; color:#fff; padding:18px 0; }
+.footer-container { width: 90%; max-width: 1100px; margin: 0 auto; text-align:center; }
+.footer-links a { color:#fff; margin:0 6px; text-decoration:none; }
+.footer-top-bar {
+    background-color: #e6b800;
+    padding: 10px 0;
+    color: #000;
+}
+.footer-top-bar .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.connect-us, .feedback {
+    display: flex;
+    align-items: center;
+}
+.feedback a {
+    color: #000;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.social-icon {
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+}
+.social-icon.facebook { background-color: #3b5998; }
+.social-icon.twitter { background-color: #1da1f2; }
+.social-icon.youtube { background-color: #ff0000; }
+.footer-main {
+    background-color: #1c1c1c;
+    color: #ccc;
+    padding: 40px 0;
+}
+.footer-main .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+.footer-column h4 {
+    color: #fff;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #555;
+}
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+.footer-column ul a {
+    color: #ccc;
+}
+.footer-logo {
+    height: 80px;
+    margin-bottom: 15px;
+}
+.footer-column.text-center {
+    text-align: center;
+}
+.footer-bottom {
+    background-color: #111;
+    color: #888;
+    padding: 15px 0;
+    font-size: 12px;
+}
+.footer-bottom .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =======================
+   RESPONSIVE STYLES
+   ======================= */
+@media (max-width: 900px) {
+    .gateway-container, .stats-grid, .footer-main .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container, .footer-bottom .footer-container, .footer-top-bar .footer-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .logo-left, .logo-right {
+        margin: 10px 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-content h1 {
+        font-size: 2.2em;
+    }
+}
+
+@media (max-width: 600px) {
+    .header-container { padding:12px; }
+    .nav-right a { margin-left:8px; font-size:14px; }
+    .proto-title { font-size:1.6em; }
+}
+
+/* Forgot & Login containers (formal) */
+.forgot-section,
+.login-main {
+    padding: 56px 20px;
+    background-color: #f7f9fb;
+}
+.forgot-container, .login-container, .query-container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--surface);
+    padding: 28px 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+.forgot-container label, .form-group label { display:block; margin-top:10px; color:var(--muted); font-size:14px; }
+.forgot-container input, .form-group input, .query-container textarea {
+    width:100%;
+    padding:12px 14px;
+    margin-top:8px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background: #fff;
+    font-size:14px;
+    color:var(--text);
+    box-shadow: none;
+}
+.forgot-container .btn-main, .login-container .btn-main { margin-top:18px; }
+.form-group input:focus, .forgot-container input:focus, .query-container textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(11,61,145,0.06);
+}
+
+/* Login pages */
+.login-section { max-width: 640px; margin: 0 auto; }
+.login-container h2 { margin-top:0; font-size:20px; color:var(--text); }
+.form-group { margin-bottom: 14px; }
+.form-group label { display:block; margin-bottom:6px; font-weight:600; color:var(--muted); }
+.login-links { margin-top:14px; display:flex; gap:12px; justify-content:flex-start; }
+
+/* Small utility */
+.text-muted { color: var(--muted); font-size: 0.95rem; }
+
+/* Guest query / form styles */
+.query-main { padding: 60px 20px; background-color: #f7f9fb; }
+.query-section { max-width: 700px; margin: 0 auto; }
+.query-container { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.query-container textarea { width:100%; padding:10px; border-radius:4px; border:1px solid #dcdfe6; }
+.query-links { margin-top:12px; }
+
+/* Dashboard chart box (scoped, appended only) */
+.dashboard-graph-box { background: #fff; border-radius:18px; box-shadow:0 2px 16px rgba(11,61,145,0.10); padding:36px 34px 24px 34px; margin-bottom:40px; }
+#queryTrendChart { min-height:300px; max-width:96%; margin:auto; display:block; }
+.dashboard-graph-box h3 { font-size:1.18rem; margin-bottom:16px; color:#2563eb; font-weight:700; }
+
+/* Student dashboard container (appended only) */
+.student-dashboard-container { padding:24px; max-width:1100px; margin:0 auto; }

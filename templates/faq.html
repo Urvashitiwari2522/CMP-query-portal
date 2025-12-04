@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Frequently Asked Questions{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Frequently Asked Questions</h2>
+
+    {% if faqs %}
+        <div class="accordion" id="faqAccordion">
+            {% for faq in faqs %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ faq.id }}">
+                    <button class="accordion-button {% if loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ faq.id }}" aria-expanded="{% if loop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ faq.id }}">
+                        {{ faq.question }}
+                        <span class="badge bg-info ms-2">{{ faq.frequency }} views</span>
+                    </button>
+                </h2>
+                <div id="collapse{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ faq.id }}" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        {% if faq.answer %}
+                            {{ faq.answer | safe }}
+                        {% else %}
+                            <em class="text-muted">No answer provided yet.</em>
+                        {% endif %}
+                        {% if faq.category %}
+                            <div class="mt-2">
+                                <small class="text-muted">Category: {{ faq.category }}</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h5>No FAQs Available</h5>
+            <p>There are currently no frequently asked questions. Check back later or contact us if you have a question.</p>
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5>Didn't find what you're looking for?</h5>
+                <p>Submit your query and we'll get back to you as soon as possible.</p>
+                <a href="{{ url_for('guest_query') }}" class="btn btn-primary">Submit a Query</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

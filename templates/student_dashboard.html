@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard - Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <style>
+        /* Minimal, local-only tweaks for spacing; reuse existing classes */
+        .dashboard-wrap { padding:24px; max-width:1100px; margin:0 auto; }
+        .query-table { width:100%; border-collapse:collapse; margin-top:16px; }
+        .query-table th, .query-table td { padding:8px 12px; border:1px solid #eee; vertical-align: top; }
+        .mt-16 { margin-top:16px; }
+        .mb-10 { margin-bottom:10px; }
+        .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+        @media (max-width: 700px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container" style="justify-content: center;">
+            <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}" alt="CMP Header" style="max-width:700px; width:100%; display:block; margin:0 auto;" />
+        </div>
+    </header>
+
+    <main class="student-dashboard-container">
+        <h1>Welcome, {{ session.get('student_name') or 'Student' }}!</h1>
+
+        <!-- New Query Card/Form -->
+        <section class="login-container mt-16" aria-label="Submit a new query">
+            <h2 style="margin-top:0;">Submit a new query</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message" style="padding:12px; margin:12px 0; border-radius:6px;
+                    {% if category == 'error' %}background:#ff0000; border:1px solid #fcc; color:#c00;{% else %}background:#efe; border:1px solid #cfc; color:#060;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form id="student-query-form" method="POST" action="{{ url_for('submit_query') }}">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="category">Category/Type</label>
+                        <select id="category" name="category" required style="width:100%; padding:12px 14px; border:1px solid #e6e9ee; border-radius:6px; background:#fff;">
+                            <option value="Admissions">Admissions</option>
+                            <option value="Fees">Fees</option>
+                            <option value="Results">Results</option>
+                            <option value="Academics">Academics</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="{{ session.get('student_name') or session.get('student_id') }}" placeholder="Your name (optional)" />
+                        <input type="hidden" id="email" name="email" value="{{ session.get('student_email') }}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="message">Your Query</label>
+                    <textarea id="message" name="message" rows="4" required style="width:100%; padding:12px 14px; border:1px solid #e6e9ee; border-radius:6px; background:#fff;"></textarea>
+                </div>
+                <div class="mb-10">
+                    <button type="submit" class="btn-main">Submit Query</button>
+                </div>
+                <p class="small text-muted">Submitted queries will appear below with their status and any admin response.</p>
+            </form>
+        </section>
+
+        <!-- Submitted Queries Table -->
+        <section class="mt-16" aria-label="Your submitted queries">
+            <h2 style="margin:8px 0; font-size: 1.1rem;">Recent Queries</h2>
+            <table class="query-table" id="student-queries-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Category</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Admin Response</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for q in queries %}
+                    <tr>
+                        <td>{{ q.id }}</td>
+                        <td>{{ q.category or '—' }}</td>
+                        <td style="max-width:360px; white-space:pre-wrap;">{{ q.message }}</td>
+                        <td>{{ (q.created_at.date().isoformat() if q.created_at) if q.created_at else '' }}</td>
+                        <td>{{ q.status or 'pending' }}</td>
+                        <td style="max-width:360px; white-space:pre-wrap;">{{ q.admin_response or q.response or '' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="small">No queries yet. Use the form above to submit your first query.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+<script src="{{ url_for('static', filename='js/student-dashboard.js') }}"></script>
+</body>
+</html>

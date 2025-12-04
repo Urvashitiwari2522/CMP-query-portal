@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest & Alumni Query - Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container" style="justify-content: center;">
+            <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}"
+                 alt="CMP Degree College Header Image"
+                 style="width: 100%; max-width: 826px; height: auto; display: block; margin: 0 auto;">
+        </div>
+    </header>
+
+    <main class="query-main">
+        <section class="query-section">
+            <div class="query-container">
+                <h2>Guest & Alumni Query Form</h2>
+                <a href="{{ url_for('guest_query') }}">Guest Query</a>
+                <form method="POST" action="{{ url_for('guest_query') }}">
+
+                    <div class="form-group">
+                        <label for="guest_name">Name</label>
+                        <input type="text" id="guest_name" name="guest_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guest_email">Email</label>
+                        <input type="email" id="guest_email" name="guest_email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category/Type</label>
+                        <select id="category" name="category" required>
+                            <option value="Admissions">Admissions</option>
+                            <option value="Fees">Fees</option>
+                            <option value="Results">Results</option>
+                            <option value="Academics">Academics</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guest_query">Your Query</label>
+                        <textarea id="guest_query" name="guest_query" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-main">Submit Query</button>
+                </form>
+                <div class="query-links">
+                    <a href="/">Back to Home</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="copyright">
+                Copyright © 2025. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

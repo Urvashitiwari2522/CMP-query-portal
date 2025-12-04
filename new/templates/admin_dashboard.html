@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .table th, .table td { padding: 8px 12px; border: 1px solid #eee; }
+        .small { font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container" style="justify-content: center;">
+            <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}" alt="CMP Header" style="max-width:700px; width:100%; display:block; margin:0 auto;">
+        </div>
+    </header>
+    <main style="padding:24px; max-width:1100px; margin:0 auto;">
+        <h1>Admin Dashboard</h1>
+        <p>Logged in as: <strong>{{ session.get('admin_username') }}</strong> — <a href="{{ url_for('logout') }}">Logout</a></p>
+
+        <table class="table">
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Status</th><th>Response</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            {% for q in queries %}
+                <tr>
+                    <td class="small">{{ q.id }}</td>
+                    <td>{{ q.name }}</td>
+                    <td>{{ q.email }}</td>
+                    <td style="max-width:300px; white-space:pre-wrap;">{{ q.message }}</td>
+                    <td>{{ q.status }}</td>
+                    <td style="max-width:300px; white-space:pre-wrap;">{{ q.response or '' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('update_status') }}">
+                            <input type="hidden" name="query_id" value="{{ q.id }}">
+                            <select name="status">
+                                <option value="pending" {% if q.status=='pending' %}selected{% endif %}>Pending</option>
+                                <option value="in-progress" {% if q.status=='in-progress' %}selected{% endif %}>In Progress</option>
+                                <option value="resolved" {% if q.status=='resolved' %}selected{% endif %}>Resolved</option>
+                            </select>
+                            <div style="margin-top:8px;"><textarea name="response" rows="3" style="width:220px;">{{ q.response or '' }}</textarea></div>
+                            <div style="margin-top:8px;"><button type="submit" class="btn-main">Save</button></div>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

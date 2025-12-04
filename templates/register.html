@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .auth-container { max-width: 420px; margin: 40px auto; padding: 24px; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+        .auth-container h1 { margin: 0 0 16px; font-size: 1.4rem; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display:block; margin-bottom: 6px; font-weight: 600; }
+        .form-group input { width:100%; padding:12px 14px; border:1px solid #e6e9ee; border-radius:6px; }
+        .btn-main { display:inline-block; padding:10px 16px; background:#2d6cdf; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+        .helper { margin-top:10px; font-size: .9rem; }
+        .small { font-size: .9rem; margin: 10px 0; padding: 8px; border-radius: 4px; }
+        .error { background: #fee; color: #c33; border: 1px solid #fcc; }
+        .success { background: #efe; color: #393; border: 1px solid #cfc; }
+    </style>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-container" style="justify-content: center;">
+        <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}" alt="CMP Header" style="max-width:700px; width:100%; display:block; margin:0 auto;">
+    </div>
+</header>
+<main>
+    <section class="auth-container">
+        <h1>Create your student account</h1>
+        
+        <!-- ✅ FIXED: Complete {% with %} ... {% endwith %} block -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="small {{ 'error' if category == 'error' else 'success' }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <!-- ✅ 4 FIELD FORM -->
+        <form method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Create Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn-main">Register</button>
+        </form>
+        
+        <!-- ✅ FIXED: Proper url_for() -->
+        <p class="helper">Already have an account? <a href="{{ url_for('student_login') }}">Log in</a></p>
+    </section>
+</main>
+</body>
+</html>

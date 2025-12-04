@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .table th, .table td { padding: 8px 12px; border: 1px solid #eee; }
+        .small { font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container" style="justify-content: center;">
+            <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}" alt="CMP Header" style="max-width:700px; width:100%; display:block; margin:0 auto;">
+        </div>
+    </header>
+    <main style="padding:24px; max-width:1100px; margin:0 auto;">
+        <h1>Admin Dashboard</h1>
+        <p>Logged in as: <strong>{{ session.get('admin_username') }}</strong> — <a href="{{ url_for('logout') }}">Logout</a></p>
+
+        <!-- Dashboard Summary (isolated container) -->
+        <section aria-label="Dashboard Summary" style="margin: 18px 0;">
+            <div style="display:grid; grid-template-columns: repeat(4, minmax(140px,1fr)); gap:12px;">
+                <div style="background:#fff; border:1px solid #e6e9ee; border-radius:10px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); padding:16px;">
+                    <div style="font-weight:600;">Total</div>
+                    <div id="total-count" style="font-size:22px; font-weight:700; margin-top:6px;">-</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e6e9ee; border-radius:10px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); padding:16px;">
+                    <div style="font-weight:600;">Pending</div>
+                    <div id="pending-count" style="font-size:22px; font-weight:700; margin-top:6px;">-</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e6e9ee; border-radius:10px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); padding:16px;">
+                    <div style="font-weight:600;">In Progress</div>
+                    <div id="inprogress-count" style="font-size:22px; font-weight:700; margin-top:6px;">-</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e6e9ee; border-radius:10px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); padding:16px;">
+                    <div style="font-weight:600;">Resolved</div>
+                    <div id="resolved-count" style="font-size:22px; font-weight:700; margin-top:6px;">-</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart Section (isolated container) -->
+        <section aria-label="Queries Over Time" style="margin: 18px 0;">
+            <div class="dashboard-graph-box">
+                <h3>Queries Over Time</h3>
+                <div style="position:relative; width:100%; height:300px;">
+                    <canvas id="queryTrendChart" aria-label="Queries over time chart"></canvas>
+                </div>
+                <p id="chart-fallback" class="small" style="display:none; margin-top:8px;">Chart unavailable. Ensure Chart.js is loaded on this page.</p>
+            </div>
+        </section>
+
+        <!-- GRID LAYOUT: LEFT=STUDENT, RIGHT=GUEST -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px;">
+            <!-- LEFT SIDE: STUDENT QUERIES ONLY -->
+            <div>
+                <h2>👨‍🎓 Student Queries ({{ student_queries|length }})</h2>
+                {% for q in student_queries %}
+                <div class="query-card" style="background:#fff; border:1px solid #e6e9ee; border-radius:10px; padding:12px; margin:10px 0;">
+                    <div><strong>{{ q.name }}</strong> | {{ q.category or 'General' }}</div>
+                    <div class="small" style="margin:6px 0;">{{ q.message[:200] }}{% if q.message and q.message|length > 200 %}...{% endif %}</div>
+                    <div class="small">Status: <strong>{{ q.status or 'Pending' }}</strong></div>
+                    {% if q.admin_response %}
+                    <div class="small">Response: {{ q.admin_response[:200] }}{% if q.admin_response and q.admin_response|length > 200 %}...{% endif %}</div>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('update_status') }}" style="margin-top:8px;">
+                        <input type="hidden" name="query_id" value="{{ q.id }}">
+                        <select name="status">
+                            <option value="pending" {% if q.status=='pending' %}selected{% endif %}>Pending</option>
+                            <option value="in-progress" {% if q.status=='in-progress' %}selected{% endif %}>In Progress</option>
+                            <option value="resolved" {% if q.status=='resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                        <div style="margin-top:8px;"><textarea name="response" rows="3" style="width:100%; max-width:600px;">{{ q.admin_response or q.response or '' }}</textarea></div>
+                    <div style="margin-top:8px;"><button type="submit" class="btn-main">Save</button></div>
+                    </form>
+                    {% if q.student_id %}
+                    <form method="POST" action="{{ url_for('toggle_block_student', sid=q.student_id) }}" style="margin-top:8px;">
+                        <button type="submit" class="btn-main" style="background:#dc3545;">{% if q.student.is_blocked %}Unblock{% else %}Block{% endif %} Student</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% else %}
+                <p class="small">No student queries available.</p>
+                {% endfor %}
+            </div>
+
+            <!-- RIGHT SIDE: GUEST QUERIES ONLY -->
+            <div style="padding-left: 20px;">
+                <h3 style="color: #28a745;">👥 Guest/Alumni Queries ({{ guest_queries|length }})</h3>
+                {% for q in guest_queries %}
+                <div class="query-card" style="background:#fff; border:1px solid #e6e9ee; border-radius:10px; padding:12px; margin:10px 0;">
+                    <div><strong>{{ q.name }}</strong> <span class="small">({{ q.email }})</span> | {{ q.category or 'General' }}</div>
+                    <div class="small" style="margin:6px 0;">{{ q.message[:200] }}{% if q.message and q.message|length > 200 %}...{% endif %}</div>
+                    <div class="small">Status: <strong>{{ q.status or 'Pending' }}</strong></div>
+                    {% if q.admin_response %}
+                    <div class="small">Response: {{ q.admin_response[:200] }}{% if q.admin_response and q.admin_response|length > 200 %}...{% endif %}</div>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('update_status') }}" style="margin-top:8px;">
+                        <input type="hidden" name="query_id" value="{{ q.id }}">
+                        <select name="status">
+                            <option value="pending" {% if q.status=='pending' %}selected{% endif %}>Pending</option>
+                            <option value="in-progress" {% if q.status=='in-progress' %}selected{% endif %}>In Progress</option>
+                            <option value="resolved" {% if q.status=='resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                        <div style="margin-top:8px;"><textarea name="response" rows="3" style="width:100%; max-width:600px;">{{ q.admin_response or q.response or '' }}</textarea></div>
+                        <div style="margin-top:8px;"><button type="submit" class="btn-main">Save</button></div>
+                    </form>
+                    <form method="POST" action="{{ url_for('toggle_block_guest') }}" style="margin-top:8px;">
+                        <input type="hidden" name="email" value="{{ q.email }}">
+                        <button type="submit" class="btn-main" style="background:#dc3545;">Block Email</button>
+                    </form>
+                </div>
+                {% else %}
+                <p>No guest queries</p>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
