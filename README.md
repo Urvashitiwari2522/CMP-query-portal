@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 College Query Management Portal - Backend
 
 Overview
@@ -77,3 +78,6 @@ Implementation Notes
 - Passwords are hashed using Werkzeug.
 - CORS is configured for /api/* routes with credentials support.
 - Email sending will log and skip if MAIL_USERNAME is not configured.
+=======
+# CMP-query-portal
+>>>>>>> 7029301b2f36c1c493ef78a85578eb8026a874f2
