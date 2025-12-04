@@ -1205,7 +1205,7 @@ def admin_faq():
             db.session.add(faq)
             db.session.commit()
             flash('FAQ added', 'success')
-    faqs = FAQ.query.order_by(FAQ.created_at.desc()).all()
+    faqs = FAQ.query.order_by(FAQ.frequency.desc()).all()
     return render_template('admin_faq.html', faqs=faqs)
 
 
