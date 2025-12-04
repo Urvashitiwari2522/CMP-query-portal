@@ -453,3 +453,19 @@
 2025-12-04 19:56:03,512 - INFO - SMTP Config: cmpquery@gmail.com
 2025-12-04 19:56:03,572 - WARNING -  * Debugger is active!
 2025-12-04 19:56:03,576 - INFO -  * Debugger PIN: 682-479-407
+2025-12-04 19:59:33,451 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-04 19:59:33,532 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-04 19:59:33,532 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-04 19:59:33,535 - INFO -  * Restarting with stat
+2025-12-04 19:59:34,307 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-04 19:59:34,370 - WARNING -  * Debugger is active!
+2025-12-04 19:59:34,373 - INFO -  * Debugger PIN: 682-479-407
+2025-12-04 20:02:28,596 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-04 20:02:28,693 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-04 20:02:28,694 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-04 20:02:28,696 - INFO -  * Restarting with stat
+2025-12-04 20:02:29,659 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-04 20:02:29,723 - WARNING -  * Debugger is active!
+2025-12-04 20:02:29,726 - INFO -  * Debugger PIN: 682-479-407
