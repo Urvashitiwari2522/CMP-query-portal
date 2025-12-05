@@ -6,8 +6,10 @@
 - [x] Added MAIL_USE_SSL = False explicitly
 - [x] Set default sender to cmpquery@gmail.com
 - [x] Added debug print statements to send_guest_response_email function for troubleshooting
+- [x] Fixed SQLAlchemy compatibility issue by downgrading to 1.4.53 (compatible with Python 3.12/3.13)
 
 ## Next Steps
+- [ ] Reinstall dependencies: pip install -r requirements.txt
 - [ ] Set environment variables: MAIL_USERNAME=email-cmpquery@gmail.com, MAIL_PASSWORD=16-digit-app-password, MAIL_USE_TLS=True
 - [ ] Test email sending by visiting /test-smtp route in browser
 - [ ] Submit a guest query and respond as admin to verify email delivery
