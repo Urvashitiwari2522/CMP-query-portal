@@ -22,12 +22,13 @@ app.secret_key = os.environ.get('FLASK_SECRET', 'dev-secret-change')
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Mail configuration (use environment variables in production)
-app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
-app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 25))
-app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes', 'on')
+app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@local')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'cmpquery@gmail.com')
 app.logger.info("SMTP Config: %s", app.config['MAIL_USERNAME'])
 
 # Safe reset: delete DB file only when RESET_DB=1 is set in environment.
@@ -55,6 +56,9 @@ except Exception:
 def send_guest_response_email(query_id, response_text):
     query = Query.query.get(query_id)
     if query and query.student_id is None and query.email:
+        print(f"DEBUG: Attempting to send email to {query.email}")
+        print(f"DEBUG: MAIL_SERVER={app.config['MAIL_SERVER']}, PORT={app.config['MAIL_PORT']}, TLS={app.config['MAIL_USE_TLS']}")
+        print(f"DEBUG: MAIL_USERNAME={app.config['MAIL_USERNAME']}, SENDER={app.config['MAIL_DEFAULT_SENDER']}")
         msg = Message(
             subject=f"CMP Query Response - {query.subject}",
             recipients=[query.email],
@@ -74,9 +78,11 @@ CMP Degree College Query Portal
 """
         try:
             mail.send(msg)
+            print(f"DEBUG: Email sent successfully to {query.email}")
             app.logger.info("Email sent to %s", query.email)
             return True
         except Exception as e:
+            print(f"DEBUG: Email failed to {query.email}: {str(e)}")
             app.logger.error("Email failed to %s: %s", query.email, str(e))
             return False
 
@@ -1266,7 +1272,14 @@ if __name__ == '__main__':
             create_tables()
             migrate_additive_schema()
         print('CMP Query Portal - DATABASE READY')
-        app.run(debug=True)
+        print("\n" + "="*60)
+        print("🌐 APP RUNNING ON:")
+        print("🌐 http://127.0.0.1:5000")
+        print("🌐 http://localhost:5000")  
+        print("="*60)
+        
+        app.run(debug=True, port=5000, host='127.0.0.1')
     except Exception as e:
         print(f'Error initializing database: {e}')
         sys.exit(1)
+
