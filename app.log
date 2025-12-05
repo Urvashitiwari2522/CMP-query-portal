@@ -1587,3 +1587,48 @@
 2025-12-05 20:23:51,612 - INFO - SMTP Config: cmpquery@gmail.com
 2025-12-05 20:23:51,645 - WARNING -  * Debugger is active!
 2025-12-05 20:23:51,647 - INFO -  * Debugger PIN: 398-151-090
+2025-12-05 20:34:09,217 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-05 20:34:09,267 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-05 20:34:09,268 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-05 20:34:09,269 - INFO -  * Restarting with stat
+2025-12-05 20:34:09,643 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-05 20:34:09,680 - WARNING -  * Debugger is active!
+2025-12-05 20:34:09,682 - INFO -  * Debugger PIN: 398-151-090
+2025-12-05 20:34:13,707 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:13] "GET / HTTP/1.1" 200 -
+2025-12-05 20:34:13,825 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:13] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-12-05 20:34:13,954 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:13] "[36mGET /static/images/cmp_header.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:14,037 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:14] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-12-05 20:34:14,038 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:14] "[36mGET /static/images/cmp_logo.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:17,066 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:17] "GET /student-login HTTP/1.1" 200 -
+2025-12-05 20:34:17,297 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-12-05 20:34:17,328 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:17] "[36mGET /static/images/cmp_header.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:19,012 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:19] "GET / HTTP/1.1" 200 -
+2025-12-05 20:34:19,326 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:19] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-12-05 20:34:19,337 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:19] "[36mGET /static/images/cmp_header.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:19,340 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:19] "[36mGET /static/images/cmp_logo.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:19,341 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:19] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-12-05 20:34:22,366 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:22] "GET /guest-query HTTP/1.1" 200 -
+2025-12-05 20:34:22,597 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:22] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-12-05 20:34:22,627 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:22] "[36mGET /static/images/cmp_header.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:25,101 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:25] "GET / HTTP/1.1" 200 -
+2025-12-05 20:34:25,422 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:25] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-12-05 20:34:25,429 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:25] "[36mGET /static/images/cmp_header.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:25,439 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:25] "[36mGET /static/images/cmp_logo.jpg HTTP/1.1[0m" 304 -
+2025-12-05 20:34:25,439 - INFO - 127.0.0.1 - - [05/Dec/2025 20:34:25] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-12-05 20:37:52,760 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-05 20:37:52,801 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-05 20:37:52,801 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-05 20:37:52,802 - INFO -  * Restarting with stat
+2025-12-05 20:37:53,165 - INFO - SMTP Config: cmpquery@gmail.com
+2025-12-05 20:37:53,198 - WARNING -  * Debugger is active!
+2025-12-05 20:37:53,200 - INFO -  * Debugger PIN: 398-151-090
+2025-12-05 20:37:57,799 - INFO - 127.0.0.1 - - [05/Dec/2025 20:37:57] "GET / HTTP/1.1" 200 -
+2025-12-05 20:37:57,849 - INFO - 127.0.0.1 - - [05/Dec/2025 20:37:57] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-12-05 20:37:58,050 - INFO - 127.0.0.1 - - [05/Dec/2025 20:37:58] "GET /static/images/cmp_header.jpg HTTP/1.1" 200 -
+2025-12-05 20:37:58,127 - INFO - 127.0.0.1 - - [05/Dec/2025 20:37:58] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-12-05 20:37:58,128 - INFO - 127.0.0.1 - - [05/Dec/2025 20:37:58] "GET /static/images/cmp_logo.jpg HTTP/1.1" 200 -
+2025-12-05 20:38:01,869 - INFO - 127.0.0.1 - - [05/Dec/2025 20:38:01] "GET /guest-query HTTP/1.1" 200 -
+2025-12-05 20:38:02,101 - INFO - 127.0.0.1 - - [05/Dec/2025 20:38:02] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-12-05 20:38:02,109 - INFO - 127.0.0.1 - - [05/Dec/2025 20:38:02] "[36mGET /static/images/cmp_header.jpg HTTP/1.1[0m" 304 -
