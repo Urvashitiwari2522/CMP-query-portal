@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="site-header">
+    <div class="header-container" style="justify-content: center;">
+        <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}" alt="CMP Header" style="max-width:700px; width:100%; display:block; margin:0 auto;">
+    </div>
+</header>
+<main style="padding:24px; max-width:900px; margin:0 auto;">
+    <h1>Your Queries</h1>
+    <p>Logged in as: <strong>{{ session.get('student_id') }}</strong> — <a href="{{ url_for('logout') }}">Logout</a></p>
+
+    <section style="margin-top:16px;">
+        <h2>Submit a New Query</h2>
+        <form method="POST" action="{{ url_for('guest_query') }}">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+            <button type="submit" class="btn-main">Submit Query</button>
+        </form>
+    </section>
+
+    <section style="margin-top:24px;">
+        <h2>Your Submitted Queries</h2>
+        {% if queries %}
+            <table class="table">
+                <thead><tr><th>ID</th><th>Message</th><th>Status</th><th>Response</th><th>When</th></tr></thead>
+                <tbody>
+                {% for q in queries %}
+                    <tr>
+                        <td>{{ q.id }}</td>
+                        <td style="white-space:pre-wrap; max-width:300px;">{{ q.message }}</td>
+                        <td>{{ q.status }}</td>
+                        <td style="white-space:pre-wrap; max-width:300px;">{{ q.response or '' }}</td>
+                        <td class="small">{{ q.created_at }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No queries yet — submit one using the form above.</p>
+        {% endif %}
+    </section>
+</main>
+</body>
+</html>

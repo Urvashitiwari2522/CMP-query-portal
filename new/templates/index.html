@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-container" style="justify-content: center;">
+        <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}" alt="CMP Degree College Header Image" style="width: 100%; max-width: 826px; height: auto; display: block; margin: 0 auto;">
+    </div>
+</header>
+
+<main class="homepage-main">
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Welcome to CMP Query Management Portal</h1>
+            <p>Your direct link to the college administration for all queries and support.</p>
+        </div>
+    </section>
+
+    <section class="gateway-section">
+        <div class="gateway-container">
+            <article class="gateway-card">
+                <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h3>Student Portal</h3>
+                <p>Log in to submit new queries, track your status, and view responses from the administration.</p>
+                <a href="{{ url_for('student_login') }}" class="btn-main">Student Login</a>
+            </article>
+            <article class="gateway-card">
+                <div class="card-icon"><i class="fas fa-user"></i></div>
+                <h3>Guest & Alumni Form</h3>
+                <p>Have a question for the college? Submit your query here, and we'll get back to you via email.</p>
+                <a href="{{ url_for('guest_query') }}" class="btn-secondary">Submit a Query</a>
+            </article>
+            <article class="gateway-card">
+                <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                <h3>Admin Panel</h3>
+                <p>Authorized personnel log in here to manage, respond to, and resolve all submitted queries.</p>
+                <a href="{{ url_for('admin_login') }}" class="btn-secondary">Admin Login</a>
+            </article>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-container">
+            <h2>Query System At a Glance</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="stat-number">1,245</span>
+                    <p class="stat-metric">Total Queries Resolved</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-stopwatch"></i>
+                    <span class="stat-number">48 Hours</span>
+                    <p class="stat-metric">Average Response Time</p>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-sync-alt"></i>
+                    <span class="stat-number">32</span>
+                    <p class="stat-metric">Active Queries</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="faq-container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <button class="faq-question"><span>How long does it take to get a response?</span><span class="faq-icon">+</span></button>
+                <div class="faq-answer"><p>Typically, you can expect a response within 3-5 business days. You can track the status in your student dashboard.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question"><span>What kind of queries can I submit?</span><span class="faq-icon">+</span></button>
+                <div class="faq-answer"><p>This portal is for all non-emergency administrative and academic queries, including questions about exams, fees, library services, and hostel facilities.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question"><span>I forgot my password. What should I do?</span><span class="faq-icon">+</span></button>
+                <div class="faq-answer"><p>If you have forgotten your password, please visit the college's ICT/DCA department office with your student ID card to request a password reset.</p></div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-top-bar">
+        <div class="footer-container">
+            <div class="connect-us"><span>Connect with us on:</span><a href="https://cmpcollege.ac.in/#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a><a href="https://cmpcollege.ac.in/#" class="social-icon twitter"><i class="fab fa-twitter"></i></a><a href="https://cmpcollege.ac.in/#" class="social-icon youtube"><i class="fab fa-youtube"></i></a></div>
+            <div class="feedback"><span>SEND YOUR COMMENTS/FEEDBACK:</span><a href="mailto:cmpdc1@gmail.com">cmpdc1@gmail.com</a></div>
+        </div>
+    </div>
+    <div class="footer-main">
+        <div class="footer-container grid">
+            <div class="footer-column"><h4>IMPORTANT LINKS</h4><ul><li><a href="https://recruitments.cmpcollege.ac.in/">Recruitments</a></li><li><a href="https://cmpcollege.ac.in/Contact%20Us">Contact Us</a></li><li><a href="https://cmpcollege.ac.in/policy/">Policy</a></li></ul></div>
+            <div class="footer-column text-center">
+                <img src="{{ url_for('static', filename='images/cmp_logo.jpg') }}" alt="CMP College Logo" class="footer-logo">
+                <p>C.M.P. Degree College<br>M.G. Marg, Prayagraj-211002<br>Uttar Pradesh, India</p>
+            </div>
+            <div class="footer-column"><h4>MEDIA</h4><ul><li><a href="https://cmpcollege.ac.in/en/page/photos">Photographs</a></li><li><a href="https://cmpcollege.ac.in/en/article/media">Videos</a></li><li><a href="https://campus-life.cmpcollege.ac.in/">Campus Life</a></li></ul></div>
+            <div class="footer-column"><h4>MAP</h4><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.0773173105327!2d81.85384231487556!3d25.437131083783037!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398532dc2ffb7cc7%3A0x2c360b1f3176e6b2!2sC%20M%20P%20Degree%20College!5e0!3m2!1sen!2sin!4v1689860859194!5m2!1sen!2sin" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe></div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-container">
+            <div class="last-updated">Page Last Updated on: 2 October 2025</div>
+            <div class="copyright">Copyright © 2025. All rights reserved</div>
+            <div class="developer">Design & Developed by Urvashi Tiwari (BCA 3rd year student)</div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+            const answer = question.nextElementSibling;
+            const icon = question.querySelector('.faq-icon');
+            const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
+            if (isOpen) {
+                answer.style.maxHeight = '0px';
+                icon.textContent = '+';
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.textContent = '-';
+            }
+        });
+    });
+</script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

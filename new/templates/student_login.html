@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - Query Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container" style="justify-content: center;">
+            <img src="{{ url_for('static', filename='images/cmp_header.jpg') }}"
+                 alt="CMP Degree College Header Image"
+                 style="width: 100%; max-width: 826px; height: auto; display: block; margin: 0 auto;">
+        </div>
+    </header>
+
+    <main class="login-main">
+        <section class="login-section">
+            <div class="login-container">
+                <h2>Student Login</h2>
+                <form method="POST" action="{{ url_for('student_login') }}">
+                    <label for="student_id">Student ID</label>
+                    <input type="text" id="student_id" name="student_id" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit" class="btn-main">Login</button>
+                </form>
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
+                <div class="login-links">
+                    <a href="{{ url_for('student_forgot_password') }}">Forgot password?</a>
+                    <a href="/">← Back to Home</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="copyright">
+                Copyright © 2025. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
