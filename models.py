@@ -8,13 +8,14 @@ class Query(db.Model):
     __tablename__ = 'queries'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    email = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(200), nullable=True)  # Allow NULL for students
     message = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(100), nullable=True)
     status = db.Column(db.String(50), default='Pending')
     response = db.Column(db.Text, nullable=True)
     # optional admin reply stored explicitly
     admin_response = db.Column(db.Text, nullable=True)
+    query_type = db.Column(db.String(20), default='guest', nullable=False)
     # Optional link to a logged-in student (store numeric students.id)
     student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=True)
     # relationship to access the student if needed
@@ -49,4 +50,5 @@ class Student(db.Model):
     student_id = db.Column(db.Text, unique=True, nullable=False)
     name = db.Column(db.Text, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
+    course = db.Column(db.String(100), nullable=True)
     password = db.Column(db.Text, nullable=False)  # stores hashed password

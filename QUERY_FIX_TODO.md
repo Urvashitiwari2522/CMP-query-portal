@@ -1,15 +1,28 @@
-# Query Mapping Fix - Approved
-Status: Plan Approved - Step-by-Step Implementation
+# CMP Query Portal Fix - Step-by-Step Implementation Plan
 
-## Plan Summary
-Student login: CSV match → lookup/create Student(enrollment_no as student_id) → session['student_id']=s.id (numeric FK)
-submit_query: attaches to Query.student_id 
-Dashboards: already filter by student_id FK ✓
+## Status: [IN PROGRESS] 
 
-## Steps
-### 1. [✅] Edit app.py student_login: Add Student lookup/create + session['student_id']
-### 2. [✅] Test: login → submit → student dashboard shows / admin student section
-### 3. [✅] Complete ✓
+**Completed Steps:**
+- [x] Analyzed issues (IntegrityError email NULL, duplicate code, None fields)
+- [x] Fixed models.py (Query.email nullable=True)
+- [x] Cleaned app.py /submit_query (single robust logic, print debug, dummy email students, try/except DB)
+- [x] Retained guest/student separation & validation
 
-**Fixed:** Student queries now link via student_id FK → appear in student dashboard + admin student section (not guest).
+**Status:** READY TO TEST - All fixes applied
+
+**Test Commands:**
+```
+python app.py
+```
+1. Guest: /guest-query → fill → submit (check terminal SUCCESS)
+2. Student login → dashboard → submit (check own list)
+3. Admin dashboard → see both sections
+
+**Expected Terminal Output:**
+```
+=== SUBMIT_QUERY DEBUG ===
+SUCCESS: Query #X saved (guest/student)
+```
+
+Files fixed. Run tests to verify no errors/data flow.
 

@@ -1,8 +1,10 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import sys
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_mail import Mail, Message
-from sqlalchemy import text, inspect
+from sqlalchemy import text, inspect, func
 from sqlalchemy.exc import OperationalError
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
@@ -22,17 +24,8 @@ app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.config.get('MAIL_USERNAME'))
 
-# Safe reset: delete DB file only when RESET_DB=1 is set in environment.
-# This prevents accidental destructive deletes. To reset, run once with:
-# PowerShell: $env:RESET_DB='1'; python app.py
-if os.environ.get('RESET_DB') == '1':
-    db_file = 'cmp_queries.db'
-    try:
-        if os.path.exists(db_file):
-            os.remove(db_file)
-            print('OLD DATABASE DELETED - Fresh start')
-    except Exception as e:
-        print('Failed to delete old database:', e)
+# DISABLED: DB reset logic removed for persistence
+# (RESET_DB=1 deletion previously caused data loss)
 
 # initialize db
 db.init_app(app)
@@ -82,6 +75,16 @@ def create_tables():
             if 'admin_response' not in cols:
                 app.logger.info('Adding admin_response column to queries table')
                 conn.execute(text("ALTER TABLE queries ADD COLUMN admin_response TEXT"))
+                db.session.commit()
+            if 'query_type' not in cols:
+                app.logger.info('Adding query_type column to queries table')
+                conn.execute(text("ALTER TABLE queries ADD COLUMN query_type VARCHAR(20) DEFAULT 'guest'"))
+                db.session.commit()
+            # Add course column to students table if missing
+            student_cols = [r[1] for r in conn.execute(text("PRAGMA table_info('students')")).fetchall()] or []
+            if 'course' not in student_cols:
+                app.logger.info('Adding course column to students table')
+                conn.execute(text("ALTER TABLE students ADD COLUMN course TEXT"))
                 db.session.commit()
         except Exception:
             app.logger.exception('Error ensuring optional query columns exist')
@@ -267,6 +270,55 @@ def force_create_database():
     return True
 
 
+def get_frequent_queries(min_count=3):
+    """Generate FAQs from repeated queries (count >=3) with admin responses."""
+    from collections import Counter
+    from sqlalchemy import func
+    
+    # Fetch all queries
+    queries = Query.query.all()
+    
+    # Normalize for counting: lower + strip, ignore empty/short
+    normalized = [q.message.strip().lower() for q in queries 
+                  if q.message and len(q.message.strip()) >= 5]
+    counter = Counter(normalized)
+    
+    # Frequent normalized texts
+    frequent_texts = [text for text, count in counter.items() if count >= min_count]
+    
+    faqs = []
+    for norm_text in sorted(frequent_texts, key=lambda t: counter[t], reverse=True):
+        # Find original questions matching exactly (case-insensitive)
+        matching_queries = Query.query.filter(
+            func.lower(Query.message) == norm_text
+        ).all()
+        
+        if not matching_queries:
+            continue
+            
+        # Use first original as representative question
+        original_question = matching_queries[0].message.strip()
+        display_question = original_question[0].upper() + original_question[1:] if original_question else norm_text.capitalize()
+        
+        # Find LATEST with admin_response
+        latest_with_response = Query.query.filter(
+            func.lower(Query.message) == norm_text,
+            Query.admin_response.isnot(None)
+        ).order_by(Query.created_at.desc()).first()
+        
+        answer = latest_with_response.admin_response if latest_with_response else "Admin response pending."
+        
+        faqs.append({
+            "question": display_question,
+            "answer": answer
+        })
+        
+        if len(faqs) >= 5:
+            break
+    
+    return faqs
+
+
 @app.route('/fix-db')
 def fix_database():
     """One-time helper to safely add missing columns to the `students` table.
@@ -342,45 +394,112 @@ def fix_database():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    faqs = get_frequent_queries()
+    queries = Query.query.all()
+
+    total_queries = len(queries)
+
+    resolved_queries = len([q for q in queries if (q.status or '').lower() == 'resolved'])
+
+    pending_queries = len([q for q in queries if (q.status or '').lower() == 'pending'])
+
+    active_queries = pending_queries
+
+    # Average Response Time (in HOURS)
+    resolved = [q for q in queries if (q.status or '').lower() == 'resolved' and q.created_at]
+    total_time = 0
+    for q in resolved:
+        try:
+            diff = datetime.utcnow() - q.created_at
+            total_time += diff.total_seconds()
+        except:
+            continue
+
+    if len(resolved) > 0:
+        avg_response_time = round((total_time / len(resolved)) / 3600, 2)
+    else:
+        avg_response_time = 0
+
+    return render_template('index.html', faqs=faqs,
+        total_queries=total_queries,
+        resolved_queries=resolved_queries,
+        active_queries=active_queries,
+        avg_response_time=avg_response_time)
 
 
 @app.route('/submit_query', methods=['POST'])
 def submit_query():
-    name = request.form.get('name') or request.form.get('guest_name')
-    email = request.form.get('email') or request.form.get('guest_email')
-    # prefer category/message fields from student form; fallback to guest fields
-    category = request.form.get('category')
-    message = request.form.get('message') or request.form.get('guest_query')
-    student_id = session.get('student_id')  # Attach student_id (numeric students.id) if logged in
-
-    if not name or not email or not message:
-        flash('All fields are required', 'error')
-        return redirect(request.referrer or url_for('home'))
-    # Normalize session student id to integer foreign key
+    print("=== SUBMIT_QUERY DEBUG ===")
+    print(f"Form data: {dict(request.form)}")
+    print(f"Session student_id: {session.get('student_id')}")
+    
+    # Robust field extraction (prioritize standard, fallback guest_*)
+    name = (request.form.get('name') or request.form.get('guest_name') or '').strip()
+    email_input = (request.form.get('email') or request.form.get('guest_email') or '').strip()
+    category = (request.form.get('category') or request.form.get('guest_category') or 'Other').strip()
+    message = (request.form.get('message') or request.form.get('guest_query') or '').strip()
+    
+    print(f"Extracted: name='{name}', email='{email_input}', category='{category}', message='{message[:50]}...'")
+    
+    user_type = request.form.get('user_type')
+    if user_type == 'guest':
+        is_student = False
+        student_fk = None
+        print("GUEST MODE: student_fk forced to None")
+    
+    
+    VALID_CATEGORIES = {'Admission', 'Fees', 'Results', 'Academics', 'Vacancies', 'Other'}
+    if category not in VALID_CATEGORIES:
+        category = 'Other'
+        print(f"WARNING: Invalid category '{category}', set to 'Other'")
+    
+    # Determine type & prepare data
+    is_student = False
     student_fk = None
-    if student_id is not None:
+    student_id = session.get('student_id')
+    if student_id:
         try:
             student_fk = int(student_id)
-        except (TypeError, ValueError):
-            # try to resolve legacy textual student_id to student row
+            is_student = True
+            print(f"Student detected: fk={student_fk}")
+        except (ValueError, TypeError):
             try:
                 s = Student.query.filter_by(student_id=str(student_id)).first()
                 if s:
                     student_fk = s.id
-            except Exception:
-                student_fk = None
-
-    q = Query(name=name.strip(), email=email.strip(), category=(category.strip() if category else None), message=message.strip(), student_id=student_fk, status='Pending')
-    db.session.add(q)
-    db.session.commit()
-
-    flash('Your query has been submitted successfully.', 'success')
-
-    if student_id:
+                    is_student = True
+                    print(f"Student resolved: fk={student_fk}")
+            except Exception as e:
+                print(f"Student lookup failed: {e}")
+    
+    # Email: required for guest, None for student
+    final_email = email_input if not is_student else None
+    
+    print(f"Final: email='{final_email}', student_fk={student_fk}")
+    
+    try:
+        q = Query(
+            name=name,
+            email=final_email,
+            category=category,
+            message=message,
+            student_id=student_fk,
+            status='Pending'
+        )
+        db.session.add(q)
+        db.session.commit()
+        print(f"SUCCESS: Query #{q.id} saved (student_id={student_fk})")
+        flash('Query submitted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        print(f"DB ERROR: {e}")
+        flash(f'Submit failed: {str(e)}', 'error')
+        return redirect(request.referrer or url_for('home'))
+    
+    # Redirect based on user
+    if is_student:
         return redirect(url_for('student_dashboard'))
-    else:
-        return redirect(url_for('home'))
+    return redirect(url_for('home'))
 
 
 
@@ -444,9 +563,9 @@ def student_login():
     replace this with a real Student model and proper authentication.
     """
     if request.method == 'POST':
-        enrollment_no = request.form.get('enrollment_no', '').strip()
-        student_course = request.form.get('student_course', '').strip()
-        student_name = request.form.get('student_name', '').strip()
+        enrollment_no = request.form.get('enrollment_no', '').strip().upper()
+        student_course = request.form.get('student_course', '').strip().lower()
+        student_name = request.form.get('student_name', '').strip().lower()
 
         if not enrollment_no or not student_course or not student_name:
             flash('All fields are required', 'error')
@@ -457,9 +576,9 @@ def student_login():
             with open('student.csv', 'r') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    if (row['enrollment_no'].strip() == enrollment_no and
-                        row['student_course'].strip() == student_course and
-                        row['student_name'].strip() == student_name):
+                    if (row['enrollment_no'].strip().upper() == enrollment_no and
+                        row['student_course'].strip().lower() == student_course and
+                        row['student_name'].strip().lower() == student_name):
                         match_found = True
                         break
         except FileNotFoundError:
@@ -481,10 +600,15 @@ def student_login():
                 student = Student(
                     student_id=enrollment_no,
                     name=student_name,
+                    course=student_course,
                     email=f"{enrollment_no}@student.cmp",  # Dummy email
                     password=generate_password_hash('dummy')  # Dummy hash
                 )
                 db.session.add(student)
+                db.session.commit()
+            else:
+                # Update existing student with course
+                student.course = student_course
                 db.session.commit()
             
             session['student_id'] = int(student.id)
@@ -559,35 +683,39 @@ def student_required(fn):
 @app.route('/student-dashboard')
 @student_required
 def student_dashboard():
-    # Retrieve queries for currently logged-in student using numeric FK
     sid = session.get('student_id')
-    app.logger.debug('Rendering student dashboard for sid=%s', sid)
     sid_int = None
-    try:
-        if sid is not None:
-            sid_int = int(sid)
-    except (TypeError, ValueError):
-        # attempt to resolve legacy textual student_id
+    if sid:
         try:
+            sid_int = int(sid)
+        except:
             s = Student.query.filter_by(student_id=str(sid)).first()
-            if s:
-                sid_int = s.id
-        except Exception:
-            sid_int = None
-
-    if sid_int is None:
-        queries = []
-    else:
+            sid_int = s.id if s else None
+    
+    queries = []
+    if sid_int:
+        # Relaxed filter: student_id primary (query_type optional for safety)
         queries = Query.query.filter(Query.student_id == sid_int).order_by(Query.created_at.desc()).all()
+        app.logger.info(f'Student dashboard: {len(queries)} queries for sid={sid_int}')
+    
     return render_template('student_dashboard.html', queries=queries)
 
 @app.route('/admin_dashboard')
 @admin_required
 def admin_dashboard():
     try:
-        # Two sections: students (FK present) vs guests/alumni (no FK)
-        student_queries = Query.query.filter(Query.student_id.isnot(None)).order_by(Query.created_at.desc()).all()
-        guest_queries = Query.query.filter(Query.student_id.is_(None)).order_by(Query.created_at.desc()).all()
+        from sqlalchemy.orm import joinedload
+        student_queries = (Query.query
+                          .filter(Query.student_id.isnot(None))
+                          .options(joinedload(Query.student))
+                          .order_by(Query.created_at.desc())
+                          .all())
+        guest_queries = (Query.query
+                        .filter(Query.student_id.is_(None))
+                        .options(joinedload(Query.student))
+                        .order_by(Query.created_at.desc())
+                        .all())
+        app.logger.info(f'Admin dashboard: {len(student_queries)} student, {len(guest_queries)} guest queries')
         return render_template('admin_dashboard.html', student_queries=student_queries, guest_queries=guest_queries)
     except OperationalError as e:
         app.logger.exception('OperationalError when loading admin_dashboard; attempting migration')
@@ -708,9 +836,9 @@ def update_status():
     q.response = response_text or q.response
     q.admin_response = response_text or q.admin_response
     db.session.commit()
-    # Send email notification to all query types (guest, student, alumni)
+    # Send email notification only for guest queries (students use dummy emails)
     try:
-        if q.email and app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'):
+        if q.student_id is None and q.email and app.config.get('MAIL_USERNAME') and app.config.get('MAIL_PASSWORD'):
             msg = Message(
                 subject=f"Your CMP Query Update – Status: {q.status}",
                 sender=app.config.get('MAIL_DEFAULT_SENDER'),
@@ -761,11 +889,17 @@ def list_routes():
 
 
 if __name__ == '__main__':
-    # Aggressive startup: FORCE drop + recreate DB tables and verify schema.
-    ok = force_create_database()
-    if ok:
-        print('🚀 CMP Query Portal - DATABASE PERFECT')
-        app.run(debug=True)
-    else:
-        print('💥 FIX MODEL DEFINITION or inspect logs')
-        sys.exit(1)
+    # Always preserve data - only ensure tables/columns exist
+    with app.app_context():
+        create_tables()
+    print('🚀 CMP Query Portal ready - PERSISTENT DATA (instance/cmp_queries.db)')
+    print('🚀 CMP Query Portal ready (data preserved unless RESET_DB=1)')
+    app.run(debug=True)
+@app.route('/clear-queries')
+def clear_queries():
+    try:
+        deleted = Query.query.delete()
+        db.session.commit()
+        return f"Deleted {deleted} queries successfully!"
+    except Exception as e:
+        return f"Error: {str(e)}"
